@@ -11,7 +11,8 @@ public class Main {
         selectAllDemo();
         insertStudentDemo();
         selectAllDemo();
-
+        updateStudentDemo();
+        selectAllDemo();
 //        try {
 
 //            Class.forName("com.mysql.cj.jdbc.Driver");
@@ -34,6 +35,40 @@ public class Main {
 
 //        }
 
+    }
+
+    public static void updateStudentDemo()
+    {
+        System.out.println("UPDATE DEMO mit JDBC");
+
+        String connectionUrl = "jdbc:mysql://127.0.0.1:3306/jbcdemo";
+
+        String user = "root";
+
+        String pwd = "";
+
+        try (Connection conn = DriverManager.getConnection(connectionUrl, user, pwd);) {
+
+            System.out.println("Verbindung zur DB hergestellt!");
+
+            PreparedStatement preparedStatement = conn.prepareStatement(
+                    "UPDATE `student` SET `name` = ?, `email` = ? WHERE `student`.`id`= 6");
+            try
+            {
+                preparedStatement.setString(1,"Hans Zimmer");
+                preparedStatement.setString(2,"h.zi765@trx.at");
+                int affectedRows = preparedStatement.executeUpdate();
+                System.out.println("Anzahl der aktualisierten Datensätze: " +affectedRows);
+            } catch (SQLException ex)
+            {
+                System.out.println("Fehler im SQL-UPDATE Statement: " + ex.getMessage());
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println("Fehler beim Aufbau der Verbindung zur DB: " + e.getMessage());
+
+        }
     }
     public static void insertStudentDemo()
     {
