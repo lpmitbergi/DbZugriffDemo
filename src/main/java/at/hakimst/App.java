@@ -4,7 +4,45 @@ import java.sql.*;
 
 public class App {
     public static void main(String[] args) {
+        selectAllMitschueler();
         insertMitschueler("Markus","PS5 spielen");
+        selectAllMitschueler();
+        updateMitschueler(1,"Ben","Radfahren");
+        selectAllMitschueler();
+    }
+    public static void updateMitschueler(int id, String neuerMitschueler, String neuesHobby)
+    {
+        System.out.println("UPDATE Mitschueler mit JDBC");
+
+        String connectionUrl = "jdbc:mysql://127.0.0.1:3306/jbcdemo";
+
+        String user = "root";
+
+        String pwd = "";
+
+        try (Connection conn = DriverManager.getConnection(connectionUrl, user, pwd);) {
+
+            System.out.println("Verbindung zur DB hergestellt!");
+
+            PreparedStatement preparedStatement = conn.prepareStatement(
+                    "UPDATE `hobbies` SET `mitschueler` = ?, `hobby` = ? WHERE `student`.`id`= ?");
+            try
+            {
+                preparedStatement.setString(1,neuerMitschueler);
+                preparedStatement.setString(2,neuesHobby);
+                preparedStatement.setInt(3,id);
+                int affectedRows = preparedStatement.executeUpdate();
+                System.out.println("Anzahl der aktualisierten Datensätze: " +affectedRows);
+            } catch (SQLException ex)
+            {
+                System.out.println("Fehler im SQL-UPDATE Statement: " + ex.getMessage());
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println("Fehler beim Aufbau der Verbindung zur DB: " + e.getMessage());
+
+        }
     }
     public static void insertMitschueler(String mitschueler, String hobby)
     {
