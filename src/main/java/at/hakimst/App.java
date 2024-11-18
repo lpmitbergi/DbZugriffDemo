@@ -9,7 +9,42 @@ public class App {
         selectAllMitschueler();
         updateMitschueler(3,"Ben","Radfahren");
         selectAllMitschueler();
+        deleteMitschueler(3);
+        selectAllMitschueler();
+        findAllMitschuelerByNameLike("Rob");
     }
+    private static void findAllMitschuelerByNameLike(String pattern) {
+        System.out.println("Find all by Name Mitschueler mit JDBC");
+
+        String connectionUrl = "jdbc:mysql://127.0.0.1:3306/jdbc_aa2";
+
+        String user = "root";
+
+        String pwd = "";
+
+        try (Connection conn = DriverManager.getConnection(connectionUrl, user, pwd);) {
+
+            System.out.println("Verbindung zur DB hergestellt!");
+
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM `hobbies` WHERE `hobbies`.`mitschueler` LIKE ?");
+            preparedStatement.setString(1,"%"+pattern+"%");
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next())
+            {
+                int id = rs.getInt("id");
+                String mitschueler = rs.getString("mitschueler");
+                String hobby = rs.getString("hobby");
+                System.out.println("Student aus der DB: [ID] " + id + " [NAME]" + mitschueler + " [HOBBY]" + hobby);
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println("Fehler beim Aufbau der Verbindung zur DB: " + e.getMessage());
+
+        }
+
+    }
+
     public static void deleteMitschueler(int hobbyId)
     {
         System.out.println("DELETE Mitschueler mit JDBC");
