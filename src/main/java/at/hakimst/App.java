@@ -7,14 +7,14 @@ public class App {
         selectAllMitschueler();
         insertMitschueler("Markus","PS5 spielen");
         selectAllMitschueler();
-        updateMitschueler(1,"Ben","Radfahren");
+        updateMitschueler(3,"Ben","Radfahren");
         selectAllMitschueler();
     }
-    public static void updateMitschueler(int id, String neuerMitschueler, String neuesHobby)
+    public static void deleteMitschueler(int hobbyId)
     {
-        System.out.println("UPDATE Mitschueler mit JDBC");
+        System.out.println("DELETE Mitschueler mit JDBC");
 
-        String connectionUrl = "jdbc:mysql://127.0.0.1:3306/jbcdemo";
+        String connectionUrl = "jdbc:mysql://127.0.0.1:3306/jdbc_aa2";
 
         String user = "root";
 
@@ -25,7 +25,39 @@ public class App {
             System.out.println("Verbindung zur DB hergestellt!");
 
             PreparedStatement preparedStatement = conn.prepareStatement(
-                    "UPDATE `hobbies` SET `mitschueler` = ?, `hobby` = ? WHERE `student`.`id`= ?");
+                    "DELETE FROM `hobbies` WHERE `hobbies`.`id`=?");
+            try
+            {
+                preparedStatement.setInt(1,hobbyId);
+                int rowAffected = preparedStatement.executeUpdate();
+                System.out.println("Anzahl der gelöschten Datensätze: " + rowAffected);
+            } catch (SQLException ex)
+            {
+                System.out.println("Fehler im SQL-DELETE Statement: " + ex.getMessage());
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println("Fehler beim Aufbau der Verbindung zur DB: " + e.getMessage());
+
+        }
+    }
+    public static void updateMitschueler(int id, String neuerMitschueler, String neuesHobby)
+    {
+        System.out.println("UPDATE Mitschueler mit JDBC");
+
+        String connectionUrl = "jdbc:mysql://127.0.0.1:3306/jdbc_aa2";
+
+        String user = "root";
+
+        String pwd = "";
+
+        try (Connection conn = DriverManager.getConnection(connectionUrl, user, pwd);) {
+
+            System.out.println("Verbindung zur DB hergestellt!");
+
+            PreparedStatement preparedStatement = conn.prepareStatement(
+                    "UPDATE `hobbies` SET `mitschueler` = ?, `hobby` = ? WHERE `hobbies`.`id`= ?");
             try
             {
                 preparedStatement.setString(1,neuerMitschueler);
@@ -48,7 +80,7 @@ public class App {
     {
         System.out.println("INSERT Mitschueler mit JDBC");
 
-        String connectionUrl = "jdbc:mysql://127.0.0.1:3306/jbcdemo";
+        String connectionUrl = "jdbc:mysql://127.0.0.1:3306/jdbc_aa2";
 
         String user = "root";
 
